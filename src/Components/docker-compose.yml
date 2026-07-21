@@ -22,7 +22,7 @@ services:
 
   echo_engine:
     build:
-      context: ../Prototypes/engine/torch_impl
+      context: ../prototypes/engine/torch_impl
       dockerfile: light_engine.Dockerfile
     image: ts-echo-engine
     container_name: ts-echo-engine-cont
@@ -30,6 +30,18 @@ services:
       - echo-net
     volumes:
       - credentials_volume:/root/.config/gcloud/
+    environment:
+      AUDIO_DATA_DIRECTORY: ${AUDIO_DATA_DIRECTORY:-/data/b3}
+      CACHE_DIRETORY: ${CACHE_DIRETORY:-/pipeline_cache}
+      MQTT_CLIENT_URL: ${MQTT_CLIENT_URL:-ts-mqtt-server-cont}
+      MQTT_CLIENT_PORT: ${MQTT_CLIENT_PORT:-1883}
+      MQTT_PUBLISH_URL: ${MQTT_PUBLISH_URL:-projectecho/engine/2}
+      MODEL_SERVER: ${MODEL_SERVER:-http://ts-echo-model-cont:8501/v1/models/echo_model/versions/1:predict}
+      WEATHER_SERVER: ${WEATHER_SERVER:-http://ts-echo-model-cont:8501/v1/models/weather_model/versions/1:predict}
+      DB_HOSTNAME: ${DB_HOSTNAME:-ts-mongodb-cont}
+      MONGODB_URL: ${MONGODB_URL:-mongodb://ts-mongodb-cont:27017/}
+      GCLOUD_PROJECT: ${GCLOUD_PROJECT:-sit-23t1-project-echo-25288b9}
+      BUCKET_NAME: ${BUCKET_NAME:-project_echo_bucket_1}
     stdin_open: true
     tty: true
 
@@ -56,8 +68,8 @@ services:
     stdin_open: true
     tty: true
     environment:
-      - NODE_ENV=development
-      - API_HOST=ts-api-cont
+      NODE_ENV: development
+      API_HOST: ${API_HOST:-ts-api-cont}
 
 
   echo_mqtt:
@@ -108,6 +120,7 @@ services:
     environment:
       MAIL_STARTTLS: "true"
       MAIL_SSL_TLS: "false"
+      MONGODB_URI: ${MONGODB_URI:-mongodb://modelUser:EchoNetAccess2023@ts-mongodb-cont:27017/EchoNet}
 
 
     stdin_open: false

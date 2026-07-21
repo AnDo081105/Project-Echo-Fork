@@ -1,0 +1,46 @@
+# Draft CODEOWNERS generated from Project_Echo_Repository_Ownership.md.
+# Replace these placeholder team aliases with confirmed GitHub team handles
+# before enabling required code-owner review in branch protection.
+
+* @project-echo-backend
+
+# Engine owns production engine/runtime support, prototypes, research and models.
+/Echo/ @project-echo-engine
+/experiments/ @project-echo-engine
+/mlruns/ @project-echo-engine
+/Research/ @project-echo-engine
+/tutorials/ @project-echo-engine
+/models-and-data/ @project-echo-engine
+/src/production/Engine/ @project-echo-engine
+/src/production/Simulator/ @project-echo-engine
+/src/data_tools/ @project-echo-engine
+/src/prototypes/computer_vision/ @project-echo-engine
+/src/prototypes/data/ @project-echo-engine
+/src/prototypes/eda/ @project-echo-engine
+/src/prototypes/engine/ @project-echo-engine
+/src/prototypes/simulator/ @project-echo-engine
+
+# Backend owns API, shared infrastructure, local compose and deployment support.
+/.github/workflows/ @project-echo-backend
+/Requirements/ @project-echo-backend
+/src/production/API/ @project-echo-backend
+/src/production/MongoDB/ @project-echo-backend
+/src/production/MQTT-Server/ @project-echo-backend
+/src/production/docker-compose*.yml @project-echo-backend
+/src/deployment/ @project-echo-backend
+/src/Echo_Components_on_K8s/MongoDb/ @project-echo-backend
+/src/Echo_Components_on_K8s/api/ @project-echo-backend
+/src/Environments/ @project-echo-backend
+/src/loadtest/ @project-echo-backend
+/src/prototypes/api/ @project-echo-backend
+
+# HMI owns production and prototype user interface assets.
+/Design/ @project-echo-hmi
+/src/production/HMI/ @project-echo-hmi
+/src/Echo_Components_on_K8s/frontend/ @project-echo-hmi @project-echo-backend
+/src/prototypes/hmi/ @project-echo-hmi
+
+# IoT owns device, firmware, edge capture and field inference integration.
+/src/production/IoT/ @project-echo-iot
+/src/prototypes/iot/ @project-echo-iot
+/src/prototypes/engine/torch_impl/Integrate_EfficientNetV2_Engine/ @project-echo-engine @project-echo-iot

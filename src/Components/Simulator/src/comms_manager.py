@@ -59,7 +59,7 @@ class CommsManager():
     # This function uses the google bucket with audio files and
     # leverages the folder names as the official species names
     # Note: to run this you will need to first authenticate
-    # See https://github.com/DataBytes-Organisation/Project-Echo/tree/main/src/Prototypes/data#readme
+    # See https://github.com/DataBytes-Organisation/Project-Echo/tree/main/src/prototypes/data#readme
     def gcp_load_species_list(self):
  
         species_names = set()

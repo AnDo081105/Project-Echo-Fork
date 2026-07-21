@@ -1,5 +1,27 @@
 # EchoNet Components Setup
 
+## Ownership and Runtime Status
+
+`src/Components` is the current production runtime boundary for EchoNet.
+Keep production runtime files here until reviewed migration paths are agreed.
+
+Backend-owned infrastructure in this folder:
+
+- `API/` - canonical FastAPI service for HMI, Engine, IoT, user, detection, admin and system routes.
+- `MongoDB/` - MongoDB image, initialization scripts and seed data for local EchoNet.
+- `MQTT-Server/` - HiveMQ broker image and local messaging endpoint.
+- `docker-compose.yml` - authoritative local runtime orchestration.
+- `docker-compose.test.yml` - CI/local test orchestration used by GitHub Actions.
+
+Shared deployment notes:
+
+- Backend owns the Docker Compose and shared service infrastructure.
+- Engine owns model runtime code, model configuration and model artifacts.
+- HMI owns browser/server UI code and assets.
+- IoT owns device and field inference code.
+- Do not move production files from this folder without checking imports, Docker build contexts, Compose volumes, CI paths and documentation links.
+- Keep generated output, local credentials, `node_modules`, notebook checkpoints, MLflow output and model weights out of normal Git. Use DVC, Git LFS or approved external storage for large model artifacts.
+
 The echo _Components_ directory contains all the core production components of the echo system. These components can be instantiated locally on your developer machine using docker. When the echo components are instantiated in this way, the project echo team call this the **'EchoNet'** environment. Within Docker, a private network is setup called EchoNet and all the component containers join this network.
 
 To define the EchoNet environment, each component has a Docker file which explains how the container is built. Most containers will read in a requirements.txt file to setup the relevant python environment. Since each container is isolated from every other container, each component is free to define its own dependecies (e.g. its own version of python).

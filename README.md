@@ -1,5 +1,19 @@
 # Project Echo - Bioacoustics Classification Tool 🤖
 
+## Repository reorganisation status
+
+The current production runtime boundary is `src/production`. Do not move or delete files from production, prototypes, research, tutorials, or generated-output folders until the owning team has checked imports, Docker paths, compose mounts, CI paths and documentation links.
+
+Use [docs/repository-reorganisation.md](docs/repository-reorganisation.md) for the current cleanup manifest. The parent-folder `Project_Echo_Repository_Ownership.md` is the source of truth for ownership, and `Project_Echo_Repository_Reorganisation_Task_Sheet.md` is the active work list.
+
+Engine/data-tools migration note: `src/production/Store` has moved to `src/data_tools/store`, and non-runtime Engine notebooks from `src/production/Engine` have moved to `src/prototypes/engine/notebooks`. The production runtime boundary remains `src/production`; Engine runtime files, Dockerfiles, simulator support, model folders, generated outputs, and dependency folders were not moved in this slice.
+
+Prototype/root cleanup note: `src/prototypes` is now the lowercase prototype
+tree. The standalone API/model stub moved to
+`src/prototypes/api/standalone_api_stub`, HMI submission overview assets
+moved to `src/prototypes/hmi/submission_overview`, and the repository inventory
+helper moved to `src/data_tools/repository_inventory`.
+
 We are thrilled to share the progress of Project Echo, where we aim to develop an AI/ML solution for discerning the density and classification of noise-producing animals in rainforests. Our ultimate goal is to furnish conservationists with an efficient and non-invasive tool for monitoring threatened animal species populations over time.
 
 We firmly believe that sound analysis can revolutionize animal population monitoring. Our solution leverages machine learning techniques to comprehend animal density and classifications within a survey area, utilizing meticulously curated sound datasets.
@@ -223,7 +237,7 @@ We have organized the repository to streamline collaboration and ease of access:
 - **`Requirements/`**: Dependency-related files (`requirements.txt`, `setup.py`).
 - **`Research/`**: Reports, datasets, and experiment results.
 - **`src/`**: Source code for various project components.
-- **`Tutorials/`**: Example usage notebooks.
+- **`tutorials/`**: Example usage notebooks.
 
 ---
 

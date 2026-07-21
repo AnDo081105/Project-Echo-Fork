@@ -1,4 +1,18 @@
-# IoT Edge Inference — EfficientNetV2 TFLite on Raspberry Pi
+# IoT Edge Inference - EfficientNetV2 TFLite on Raspberry Pi
+
+Owner: IoT team
+Status: Primary field-device inference path; not a Docker Compose service
+Shared dependency: Engine-owned TFLite export files from `src/prototypes/engine/torch_impl/Integrate_EfficientNetV2_Engine/`
+
+## Reorganisation Status
+
+This folder should stay under IoT ownership during the repository reorganisation. It contains source needed for Raspberry Pi edge inference and MQTT prediction publishing, so do not move or archive it without confirming Engine model-export compatibility and field-device deployment paths.
+
+Configuration risk to resolve before production deployment:
+
+- `iot_edge_client.py:218` defaults to public MQTT broker `broker.hivemq.com`.
+- README examples use `broker.hivemq.com` and `iot/data/test` for development at `README.md:151`, `README.md:153`, `README.md:175`, `README.md:177`, `README.md:217`, and `README.md:228`.
+- Production should provide broker, topic, sensor ID, GPS mode, and model location through device configuration or environment-backed launch scripts.
 
 ## Overview
 
@@ -45,8 +59,8 @@ Both modes are supported simultaneously on the same MQTT topic. The engine detec
 | `src/Components/Engine/Engine.Dockerfile` | Now copies `echo_engine_iot.py` as `echo_engine.py` so IoT engine runs in Docker |
 | `src/Components/Engine/requirements.txt` | Added `scikit-learn` (was imported but missing) |
 | `src/Components/Engine/test_iot_integration.py` | Updated import to `from echo_engine_iot import EchoEngine` so tests run locally |
-| `src/Prototypes/engine/torch_impl/light_echo_engine.json` | Fixed `MQTT_CLIENT_URL` from `"mqtt-broker"` → `"ts-mqtt-server-cont"` (was causing DNS failure) |
-| `src/Prototypes/engine/torch_impl/requirements.txt` | Added `paho-mqtt==1.6.1`, `pymongo`, `geopy`, `google-cloud-storage` |
+| `src/prototypes/engine/torch_impl/light_echo_engine.json` | Fixed `MQTT_CLIENT_URL` from `"mqtt-broker"` → `"ts-mqtt-server-cont"` (was causing DNS failure) |
+| `src/prototypes/engine/torch_impl/requirements.txt` | Added `paho-mqtt==1.6.1`, `pymongo`, `geopy`, `google-cloud-storage` |
 
 ---
 
@@ -97,7 +111,7 @@ payload["type"] == "prediction"?
 
 ### 1. Copy model files to the RPi
 
-You need three files from `src/Prototypes/engine/torch_impl/Integrate_EfficientNetV2_Engine/_trained_models/`:
+You need three files from `src/prototypes/engine/torch_impl/Integrate_EfficientNetV2_Engine/_trained_models/`:
 
 ```
 efficientnetv2_project_echo.tflite

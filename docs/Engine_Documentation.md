@@ -18,7 +18,7 @@ Project Echo is a bioacoustics classification system designed to detect and clas
 
 ### What is the Engine?
 
-The Engine (`src/Components/Engine`) is the production-ready core processing unit responsible for:
+The Engine (`src/production/Engine`) is the production-ready core processing unit responsible for:
 
 1. **Real-time Audio Processing**: Subscribes to MQTT topics and receives audio clips from IoT sensors
 2. **Feature Extraction**: Converts raw audio into Mel spectrograms optimized for CNN input
@@ -38,8 +38,8 @@ IoT Sensors → MQTT Broker → Echo Engine → TensorFlow Serving → MongoDB
 ### Codebase Structure
 
 > **Important:** The codebase contains two distinct implementations:
-> - **Stable Engine** (`src/Components/Engine`): Production-ready implementation covered in this document
-> - **Prototype Engine** (`src/Prototypes/engine/torch_impl`): Experimental PyTorch-based implementation for future IoT/TFLite deployment
+> - **Stable Engine** (`src/production/Engine`): Production-ready implementation covered in this document
+> - **Prototype Engine** (`src/prototypes/engine/torch_impl`): Experimental PyTorch-based implementation for future IoT/TFLite deployment
 
 This documentation focuses on the **Stable Engine**.
 
@@ -84,7 +84,7 @@ cd Project-Echo
 **2. Navigate to Engine Directory**
 
 ```bash
-cd src/Components/Engine
+cd src/production/Engine
 ```
 
 **3. Install Python Dependencies**
@@ -129,7 +129,7 @@ Engine waiting for audio to arrive...
 For hands-on learning, complete the onboarding notebook:
 
 ```bash
-cd "Tutorials/Onboarding Task"
+cd "tutorials/Onboarding Task"
 jupyter notebook onboarding_updated.ipynb
 ```
 
@@ -336,7 +336,7 @@ def weather_pipeline(self, audio_clip):
 ### File Structure
 
 ```
-src/Components/Engine/
+src/production/Engine/
 ├── echo_engine.py              # Main application entry point
 ├── echo_engine.json            # Configuration (audio params, endpoints)
 ├── echo_credentials.json       # Database credentials (gitignored)
@@ -732,8 +732,8 @@ The Prototypes directory contains experimental implementations for future deploy
 
 | Prototype | Location | Purpose | Status |
 |-----------|----------|---------|--------|
-| **Torch Implementation** | `src/Prototypes/engine/torch_impl` | PyTorch-based audio classification for edge/IoT deployment | Active Development |
-| **Computer Vision** | `src/Prototypes/Computer Vision` | Image-based creature classification using camera traps | Prototype |
+| **Torch Implementation** | `src/prototypes/engine/torch_impl` | PyTorch-based audio classification for edge/IoT deployment | Active Development |
+| **Computer Vision** | `src/prototypes/computer_vision` | Image-based creature classification using camera traps | Prototype |
 
 ---
 
@@ -749,7 +749,7 @@ The torch_impl is a PyTorch-based training and inference pipeline designed for:
 ### File Structure
 
 ```
-src/Prototypes/engine/torch_impl/
+src/prototypes/engine/torch_impl/
 ├── config/                         # Training configuration files
 ├── docs/                           # Documentation
 ├── model/                          # Model architecture definitions
@@ -800,7 +800,7 @@ src/Prototypes/engine/torch_impl/
 #### 1. Environment Setup
 
 ```bash
-cd src/Prototypes/engine/torch_impl
+cd src/prototypes/engine/torch_impl
 
 # Using uv (recommended)
 uv sync
@@ -1052,7 +1052,7 @@ Camera trap image classification for wildlife monitoring. Uses MobileNetV2 for e
 ### File Structure
 
 ```
-src/Prototypes/Computer Vision/
+src/prototypes/computer_vision/
 ├── Create Dataset/
 │   ├── get_creatures_v1.py              # Download images from Wikimedia
 │   ├── augment_creatures_v1.py          # Data augmentation
@@ -1178,7 +1178,7 @@ Press `Q` to quit the window.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     PRODUCTION (src/Components/Engine)           │
+│                     PRODUCTION (src/production/Engine)           │
 │                                                                 │
 │   IoT Sensors → MQTT → Echo Engine → TF Serving → MongoDB       │
 │                              ↑                                  │
@@ -1207,7 +1207,7 @@ Press `Q` to quit the window.
 1. **Train in Prototypes** → Export TFLite model
 2. **Test with Light Engine** → Validate accuracy
 3. **Benchmark** → Measure latency/throughput
-4. **Deploy to Production** → Copy to `src/Components/Engine/models/`
+4. **Deploy to Production** → Copy to `src/production/Engine/models/`
 
 ---
 
