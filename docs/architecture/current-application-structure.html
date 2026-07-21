@@ -1,0 +1,850 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Project Echo - Current Application Structure</title>
+<script>
+  (function () {
+    const saved = localStorage.getItem("echo-architecture-theme");
+    const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    document.documentElement.classList.toggle("dark", saved ? saved === "dark" : prefersDark);
+  })();
+</script>
+<style>
+  :root {
+    --bg: #f7f5ee;
+    --surface: #ffffff;
+    --surface-2: #ece8dc;
+    --ink: #181713;
+    --body: #49463e;
+    --muted: #777266;
+    --line: #cfc8b8;
+    --line-soft: #e3dece;
+    --zone: rgba(24, 23, 19, 0.035);
+    --field: #2d8c73;
+    --field-soft: rgba(45, 140, 115, 0.13);
+    --service: #4c79a8;
+    --service-soft: rgba(76, 121, 168, 0.13);
+    --store: #b46d43;
+    --store-soft: rgba(180, 109, 67, 0.15);
+    --model: #8c6bb1;
+    --model-soft: rgba(140, 107, 177, 0.14);
+    --support: #6e7e45;
+    --support-soft: rgba(110, 126, 69, 0.15);
+    --alert: #c44949;
+    --shadow: rgba(38, 32, 20, 0.14);
+    --sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+
+  html.dark {
+    --bg: #141512;
+    --surface: #20221d;
+    --surface-2: #2b2e27;
+    --ink: #f5f1e8;
+    --body: #d4cebf;
+    --muted: #9b9485;
+    --line: #464234;
+    --line-soft: #333126;
+    --zone: rgba(245, 241, 232, 0.035);
+    --field: #4fb99d;
+    --field-soft: rgba(79, 185, 157, 0.15);
+    --service: #75a1cf;
+    --service-soft: rgba(117, 161, 207, 0.16);
+    --store: #d08b61;
+    --store-soft: rgba(208, 139, 97, 0.17);
+    --model: #b99adf;
+    --model-soft: rgba(185, 154, 223, 0.16);
+    --support: #a1b56c;
+    --support-soft: rgba(161, 181, 108, 0.16);
+    --alert: #e66b68;
+    --shadow: rgba(0, 0, 0, 0.34);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    overflow: hidden;
+    color: var(--body);
+    background: var(--bg);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .bar {
+    height: 64px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 18px;
+    border-bottom: 1px solid var(--line-soft);
+    background: var(--bg);
+  }
+
+  .title h1 {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.15;
+    color: var(--ink);
+    font-weight: 680;
+    letter-spacing: 0;
+  }
+
+  .title .sub {
+    margin-top: 3px;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .spacer { flex: 1; }
+  .chips { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+  button {
+    font: inherit;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--body);
+    cursor: pointer;
+  }
+
+  .chip {
+    min-height: 28px;
+    border-radius: 999px;
+    padding: 5px 11px;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+  }
+
+  .chip:hover, .tool:hover, .close:hover { color: var(--ink); border-color: var(--muted); }
+  .chip.on { color: var(--bg); background: var(--ink); border-color: var(--ink); }
+
+  .tool {
+    min-width: 34px;
+    min-height: 30px;
+    border-radius: 6px;
+    padding: 5px 9px;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .stage {
+    position: relative;
+    height: calc(100vh - 64px);
+    min-height: 0;
+  }
+
+  svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+    touch-action: none;
+  }
+
+  svg.dragging { cursor: grabbing; }
+
+  .zone rect {
+    fill: var(--zone);
+    stroke: var(--line);
+    stroke-width: 1.2;
+    stroke-dasharray: 6 5;
+    rx: 14;
+  }
+
+  .zone .ztitle {
+    font-family: var(--mono);
+    font-size: 12px;
+    fill: var(--muted);
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+
+  .zone .zsub {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    fill: var(--muted);
+  }
+
+  .node { cursor: pointer; }
+  .node rect {
+    fill: var(--surface);
+    stroke: var(--line);
+    stroke-width: 1.4;
+    rx: 8;
+    transition: stroke 0.16s ease, opacity 0.16s ease, filter 0.16s ease;
+  }
+
+  .node:hover rect { stroke: var(--muted); filter: drop-shadow(0 5px 12px var(--shadow)); }
+  .node.sel rect { stroke: var(--alert); stroke-width: 2.2; }
+  .node .t { fill: var(--ink); font-size: 14px; font-weight: 700; pointer-events: none; }
+  .node .m { fill: var(--muted); font-family: var(--mono); font-size: 10.5px; pointer-events: none; }
+  .node .k { fill: var(--body); font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; pointer-events: none; }
+
+  .node.field rect { fill: var(--field-soft); stroke: var(--field); }
+  .node.service rect { fill: var(--service-soft); stroke: var(--service); }
+  .node.store rect { fill: var(--store-soft); stroke: var(--store); }
+  .node.model rect { fill: var(--model-soft); stroke: var(--model); }
+  .node.support rect { fill: var(--support-soft); stroke: var(--support); }
+  .node.repo rect { fill: var(--surface-2); }
+
+  .edge {
+    fill: none;
+    stroke: var(--muted);
+    stroke-width: 1.8;
+    marker-end: url(#arrow);
+    transition: opacity 0.18s ease, stroke 0.18s ease;
+  }
+
+  .edge.dash { stroke-dasharray: 6 5; }
+  .edge.thick { stroke-width: 2.5; }
+  .elbl {
+    fill: var(--muted);
+    font-family: var(--mono);
+    font-size: 10.5px;
+    transition: opacity 0.18s ease, fill 0.18s ease;
+  }
+
+  .flowing .edge, .flowing .elbl { opacity: 0.16; }
+  .flowing .node { opacity: 0.32; }
+  .flowing .zone { opacity: 0.52; }
+  .flowing .edge.lit {
+    opacity: 1;
+    stroke: var(--alert);
+    marker-end: url(#arrow-lit);
+    stroke-dasharray: 8 5;
+    animation: march 0.85s linear infinite;
+  }
+  .flowing .elbl.lit { opacity: 1; fill: var(--alert); }
+  .flowing .node.lit { opacity: 1; }
+  .flowing .node.lit rect { stroke: var(--alert); }
+  @keyframes march { to { stroke-dashoffset: -13; } }
+  @media (prefers-reduced-motion: reduce) { .flowing .edge.lit { animation: none; } }
+
+  .panel {
+    position: absolute;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: 0 10px 30px var(--shadow);
+  }
+
+  .panel-head {
+    display: flex;
+    align-items: start;
+    gap: 10px;
+    padding: 12px 13px 8px;
+  }
+
+  .panel-title { flex: 1; min-width: 0; }
+  .panel h2, .panel h3 { margin: 0; color: var(--ink); }
+  .panel h2 { font-size: 16px; }
+  .panel h3 { font-size: 13px; font-family: var(--mono); letter-spacing: 0.06em; text-transform: uppercase; }
+  .meta { margin-top: 3px; color: var(--muted); font-family: var(--mono); font-size: 10.5px; }
+  .panel-body { padding: 0 13px 13px; font-size: 12.5px; line-height: 1.5; }
+  .panel-body p { margin: 0; }
+  .panel-body ul, .panel-body ol { margin: 8px 0 0 18px; padding: 0; }
+  .panel-body li { margin: 4px 0; }
+  code { color: var(--store); font-family: var(--mono); font-size: 0.92em; }
+
+  .close {
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    padding: 0;
+    line-height: 22px;
+    color: var(--muted);
+  }
+
+  #detail { right: 16px; bottom: 16px; width: min(360px, calc(100vw - 32px)); }
+  #flowcap { left: 16px; bottom: 16px; width: min(460px, calc(100vw - 32px)); display: none; }
+  #flowcap.show { display: block; }
+
+  .hud {
+    position: absolute;
+    left: 16px;
+    top: 14px;
+    display: flex;
+    gap: 7px;
+    align-items: center;
+  }
+
+  #zoomLabel {
+    min-width: 58px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 10.5px;
+  }
+
+  .src {
+    position: absolute;
+    right: 18px;
+    top: 16px;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 10px;
+    opacity: 0.82;
+    pointer-events: none;
+  }
+
+  @media (max-width: 920px) {
+    body { overflow: auto; }
+    .bar { height: auto; align-items: flex-start; }
+    .stage { height: 78vh; min-height: 640px; }
+    #detail, #flowcap { position: static; margin: 10px 16px; width: auto; }
+    .hud { top: auto; bottom: 14px; }
+    .src { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="bar">
+  <div class="title">
+    <h1>Project Echo - Current Application Structure</h1>
+    <div class="sub">EchoNet runtime - repository support - deployment topology</div>
+  </div>
+  <div class="spacer"></div>
+  <div class="chips" id="chips">
+    <button class="chip on" data-flow="all">Everything</button>
+    <button class="chip" data-flow="dashboard">Dashboard read</button>
+    <button class="chip" data-flow="sim">Simulator inference</button>
+    <button class="chip" data-flow="edge">Edge IoT</button>
+    <button class="chip" data-flow="deploy">Deploy</button>
+  </div>
+  <button class="tool" id="themeToggle" title="Toggle dark mode">Theme</button>
+</div>
+
+<main class="stage" id="stage">
+  <svg id="diagram" viewBox="0 0 1680 1020" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Project Echo application architecture diagram">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" style="fill: var(--muted)"></path>
+      </marker>
+      <marker id="arrow-lit" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" style="fill: var(--alert)"></path>
+      </marker>
+    </defs>
+
+    <g id="svg-content">
+      <g class="zone" id="zone-users">
+        <rect x="40" y="112" width="260" height="520"></rect>
+        <text class="ztitle" x="62" y="142">Field and users</text>
+        <text class="zsub" x="62" y="161">operators, researchers, devices</text>
+      </g>
+      <g class="zone" id="zone-runtime">
+        <rect x="340" y="86" width="840" height="640"></rect>
+        <text class="ztitle" x="362" y="116">src/production - EchoNet</text>
+        <text class="zsub" x="362" y="135">Docker Compose bridge network; mirrored by Kubernetes manifests</text>
+      </g>
+      <g class="zone" id="zone-state">
+        <rect x="1220" y="112" width="410" height="520"></rect>
+        <text class="ztitle" x="1242" y="142">State, model and external data</text>
+        <text class="zsub" x="1242" y="161">MongoDB, TF Serving, GCP buckets, model artifacts</text>
+      </g>
+      <g class="zone" id="zone-repo">
+        <rect x="90" y="780" width="1510" height="178"></rect>
+        <text class="ztitle" x="112" y="810">Repository support structure</text>
+        <text class="zsub" x="112" y="829">docs, design, research, tutorials, prototypes, data tools, models and experiments</text>
+      </g>
+
+      <path class="edge thick" id="e-browser-hmi" d="M280,210 C330,210 344,210 390,210"></path>
+      <path class="edge" id="e-hmi-api" d="M570,210 C635,210 642,285 705,285"></path>
+      <path class="edge" id="e-hmi-redis" d="M522,258 C560,350 632,438 705,486"></path>
+      <path class="edge" id="e-api-mongo" d="M885,282 C1020,260 1112,248 1260,248"></path>
+      <path class="edge" id="e-hmi-mongo" d="M570,238 C832,404 1052,360 1260,306"></path>
+      <path class="edge" id="e-sim-mqtt" d="M570,548 C630,540 642,398 705,398"></path>
+      <path class="edge" id="e-mqtt-engine" d="M885,398 C938,398 952,486 1005,486"></path>
+      <path class="edge" id="e-sim-api" d="M570,585 C682,658 764,400 730,335"></path>
+      <path class="edge" id="e-engine-model" d="M1185,486 C1230,486 1230,420 1260,405"></path>
+      <path class="edge" id="e-engine-api" d="M1005,520 C945,532 897,350 858,330"></path>
+      <path class="edge" id="e-engine-mongo" d="M1185,520 C1238,535 1266,326 1306,318"></path>
+      <path class="edge dash" id="e-engine-gcp" d="M1168,448 C1234,360 1268,516 1304,540"></path>
+      <path class="edge" id="e-iot-mqtt" d="M280,372 C458,350 594,380 705,398"></path>
+      <path class="edge dash" id="e-iot-api" d="M280,416 C498,460 624,328 705,318"></path>
+      <path class="edge" id="e-manage-api" d="M570,632 C625,630 655,355 705,330"></path>
+      <path class="edge" id="e-api-k8s" d="M790,335 C815,704 830,780 830,844"></path>
+      <path class="edge" id="e-hmi-k8s" d="M480,258 C504,704 640,780 758,844"></path>
+      <path class="edge" id="e-engine-k8s" d="M1085,552 C1070,705 970,785 910,844"></path>
+      <path class="edge dash" id="e-repo-runtime" d="M390,844 C405,748 450,706 495,632"></path>
+      <path class="edge dash" id="e-proto-engine" d="M1030,844 C1045,734 1045,640 1085,552"></path>
+      <path class="edge dash" id="e-data-engine" d="M1280,844 C1272,720 1236,570 1168,520"></path>
+
+      <text class="elbl" data-e="e-browser-hmi" x="310" y="194">HTTP :8080</text>
+      <text class="elbl" data-e="e-hmi-api" x="616" y="226">axios/fetch</text>
+      <text class="elbl" data-e="e-api-mongo" x="1050" y="238">CRUD + indexes</text>
+      <text class="elbl" data-e="e-hmi-redis" x="596" y="404">sessions</text>
+      <text class="elbl" data-e="e-sim-mqtt" x="600" y="514">audio events</text>
+      <text class="elbl" data-e="e-mqtt-engine" x="925" y="438">subscribe</text>
+      <text class="elbl" data-e="e-engine-model" x="1205" y="454">predict :8501</text>
+      <text class="elbl" data-e="e-engine-api" x="914" y="472">POST /engine/event</text>
+      <text class="elbl" data-e="e-iot-mqtt" x="420" y="342">MQTT :1883</text>
+      <text class="elbl" data-e="e-engine-gcp" x="1210" y="566">samples/species</text>
+      <text class="elbl" data-e="e-api-k8s" x="804" y="620">deployment source</text>
+
+      <g class="node field" id="node-browser" data-node="browser" transform="translate(70 176)">
+        <rect width="210" height="86"></rect>
+        <text class="k" x="16" y="24">Human-facing</text>
+        <text class="t" x="16" y="47">Browser users</text>
+        <text class="m" x="16" y="68">operators - admins - public</text>
+      </g>
+      <g class="node field" id="node-iot" data-node="iot" transform="translate(70 330)">
+        <rect width="210" height="110"></rect>
+        <text class="k" x="16" y="24">Field runtime</text>
+        <text class="t" x="16" y="47">IoT edge nodes</text>
+        <text class="m" x="16" y="68">edge_inference/iot_edge_client.py</text>
+        <text class="m" x="16" y="88">raw audio or edge prediction</text>
+      </g>
+
+      <g class="node service" id="node-hmi" data-node="hmi" transform="translate(390 166)">
+        <rect width="180" height="92"></rect>
+        <text class="k" x="16" y="24">HMI</text>
+        <text class="t" x="16" y="47">Node/Express UI</text>
+        <text class="m" x="16" y="68">HMI/ui/server.js</text>
+      </g>
+      <g class="node service" id="node-api" data-node="api" transform="translate(705 250)">
+        <rect width="180" height="102"></rect>
+        <text class="k" x="16" y="24">Backend</text>
+        <text class="t" x="16" y="47">FastAPI service</text>
+        <text class="m" x="16" y="68">API/app/main.py</text>
+        <text class="m" x="16" y="88">routers by feature</text>
+      </g>
+      <g class="node service" id="node-mqtt" data-node="mqtt" transform="translate(705 366)">
+        <rect width="180" height="86"></rect>
+        <text class="k" x="16" y="24">Messaging</text>
+        <text class="t" x="16" y="47">HiveMQ broker</text>
+        <text class="m" x="16" y="68">MQTT-Server :1883</text>
+      </g>
+      <g class="node service" id="node-redis" data-node="redis" transform="translate(705 462)">
+        <rect width="180" height="76"></rect>
+        <text class="k" x="16" y="24">Session cache</text>
+        <text class="t" x="16" y="47">Redis</text>
+        <text class="m" x="16" y="66">echo-redis :6379</text>
+      </g>
+      <g class="node service" id="node-sim" data-node="simulator" transform="translate(390 518)">
+        <rect width="180" height="114"></rect>
+        <text class="k" x="16" y="24">Production support</text>
+        <text class="t" x="16" y="47">Simulator</text>
+        <text class="m" x="16" y="68">animal movement</text>
+        <text class="m" x="16" y="88">microphones</text>
+        <text class="m" x="16" y="108">audio messages</text>
+      </g>
+      <g class="node service" id="node-iotmgmt" data-node="iotmgmt" transform="translate(390 640)">
+        <rect width="180" height="68"></rect>
+        <text class="k" x="16" y="24">Compose service</text>
+        <text class="t" x="16" y="47">IoT management</text>
+      </g>
+      <g class="node model" id="node-engine" data-node="engine" transform="translate(1005 450)">
+        <rect width="180" height="110"></rect>
+        <text class="k" x="16" y="24">Engine</text>
+        <text class="t" x="16" y="47">Audio inference</text>
+        <text class="m" x="16" y="68">echo_engine_iot.py</text>
+        <text class="m" x="16" y="88">YAMNet + EfficientNet</text>
+      </g>
+
+      <g class="node store" id="node-mongo" data-node="mongo" transform="translate(1260 220)">
+        <rect width="210" height="110"></rect>
+        <text class="k" x="16" y="24">Persistent state</text>
+        <text class="t" x="16" y="47">MongoDB EchoNet</text>
+        <text class="m" x="16" y="68">events - movements - species</text>
+        <text class="m" x="16" y="88">users - nodes - projects</text>
+      </g>
+      <g class="node model" id="node-model" data-node="model" transform="translate(1260 376)">
+        <rect width="210" height="86"></rect>
+        <text class="k" x="16" y="24">Model service</text>
+        <text class="t" x="16" y="47">TensorFlow Serving</text>
+        <text class="m" x="16" y="68">echo_model - weather_model</text>
+      </g>
+      <g class="node store" id="node-gcp" data-node="gcp" transform="translate(1260 512)">
+        <rect width="210" height="78"></rect>
+        <text class="k" x="16" y="24">External data</text>
+        <text class="t" x="16" y="47">GCP bucket</text>
+        <text class="m" x="16" y="68">audio + species folders</text>
+      </g>
+      <g class="node store" id="node-mongoexpress" data-node="mongoexpress" transform="translate(1485 238)">
+        <rect width="118" height="74"></rect>
+        <text class="k" x="12" y="23">Admin</text>
+        <text class="t" x="12" y="46">mongo-express</text>
+        <text class="m" x="12" y="64">:8888</text>
+      </g>
+
+      <g class="node repo" id="node-docs" data-node="docs" transform="translate(122 844)">
+        <rect width="160" height="78"></rect>
+        <text class="k" x="14" y="24">Docs</text>
+        <text class="t" x="14" y="47">docs/</text>
+        <text class="m" x="14" y="66">architecture lives here</text>
+      </g>
+      <g class="node repo" id="node-design" data-node="design" transform="translate(310 844)">
+        <rect width="160" height="78"></rect>
+        <text class="k" x="14" y="24">Product</text>
+        <text class="t" x="14" y="47">Design/</text>
+        <text class="m" x="14" y="66">branding + diagrams</text>
+      </g>
+      <g class="node repo" id="node-prototypes" data-node="prototypes" transform="translate(498 844)">
+        <rect width="188" height="78"></rect>
+        <text class="k" x="14" y="24">R and D</text>
+        <text class="t" x="14" y="47">src/prototypes</text>
+        <text class="m" x="14" y="66">engine, api, hmi, simulator</text>
+      </g>
+      <g class="node support" id="node-k8s" data-node="k8s" transform="translate(724 844)">
+        <rect width="190" height="78"></rect>
+        <text class="k" x="14" y="24">Deployment</text>
+        <text class="t" x="14" y="47">Kubernetes manifests</text>
+        <text class="m" x="14" y="66">api - hmi - engine - db</text>
+      </g>
+      <g class="node repo" id="node-experiments" data-node="experiments" transform="translate(952 844)">
+        <rect width="170" height="78"></rect>
+        <text class="k" x="14" y="24">ML workflow</text>
+        <text class="t" x="14" y="47">experiments/</text>
+        <text class="m" x="14" y="66">MLflow + DVC demos</text>
+      </g>
+      <g class="node repo" id="node-data" data-node="data" transform="translate(1160 844)">
+        <rect width="170" height="78"></rect>
+        <text class="k" x="14" y="24">Data tools</text>
+        <text class="t" x="14" y="47">src/data_tools</text>
+        <text class="m" x="14" y="66">store + inventory</text>
+      </g>
+      <g class="node repo" id="node-research" data-node="research" transform="translate(1368 844)">
+        <rect width="170" height="78"></rect>
+        <text class="k" x="14" y="24">Knowledge base</text>
+        <text class="t" x="14" y="47">Research/ tutorials/</text>
+        <text class="m" x="14" y="66">papers + notebooks</text>
+      </g>
+    </g>
+  </svg>
+
+  <div class="hud">
+    <button class="tool" id="resetZoom" title="Reset pan and zoom">100%</button>
+    <div id="zoomLabel">100%</div>
+  </div>
+  <div class="src">Sources: README files, docker-compose.yml, API routers, Engine/Simulator/IoT docs</div>
+
+  <aside class="panel" id="detail">
+    <div class="panel-head">
+      <div class="panel-title">
+        <h2 id="detailTitle">Click a node</h2>
+        <div class="meta" id="detailMeta">Pan by dragging. Zoom with the mouse wheel.</div>
+      </div>
+      <button class="close" id="closeDetail" title="Close detail panel">x</button>
+    </div>
+    <div class="panel-body">
+      <p id="detailBody">Use the flow chips to light up the active request paths across the current Project Echo application.</p>
+    </div>
+  </aside>
+
+  <aside class="panel" id="flowcap">
+    <div class="panel-head">
+      <div class="panel-title">
+        <h3 id="flowTitle">Flow</h3>
+        <div class="meta" id="flowMeta">Active path</div>
+      </div>
+      <button class="close" id="closeFlow" title="Close flow panel">x</button>
+    </div>
+    <div class="panel-body" id="flowBody"></div>
+  </aside>
+</main>
+
+<script>
+  const nodeInfo = {
+    browser: {
+      title: "Browser users",
+      meta: "Operators, administrators, public visitors",
+      body: "Users enter through the HMI at <code>localhost:8080</code>. The browser dashboard shows maps, detections, requests, sensor health, projects, admin pages, submissions and donation flows."
+    },
+    iot: {
+      title: "IoT edge nodes",
+      meta: "src/production/IoT",
+      body: "The primary field path is <code>edge_inference/iot_edge_client.py</code>. It can publish compact edge predictions, while older/raw modes still send audio payloads for server-side inference."
+    },
+    hmi: {
+      title: "Node/Express HMI",
+      meta: "src/production/HMI/ui/server.js",
+      body: "The HMI serves static browser assets and server-side routes. It proxies several operations to FastAPI, uses Redis for sessions, and has direct MongoDB helpers for donation/admin workflows."
+    },
+    api: {
+      title: "FastAPI service",
+      meta: "src/production/API/app/main.py",
+      body: "The canonical backend registers routers for <code>/hmi</code>, <code>/engine</code>, <code>/sim</code>, <code>/iot</code>, <code>/sensors</code>, auth, projects, insights, detections and predictions."
+    },
+    mqtt: {
+      title: "HiveMQ broker",
+      meta: "src/production/MQTT-Server",
+      body: "MQTT is the runtime message bus. Simulator and field devices publish events; the Engine subscribes to configured topics such as <code>projectecho/engine/2</code> or IoT topics."
+    },
+    redis: {
+      title: "Redis",
+      meta: "echo-redis compose service",
+      body: "Redis is included in the Compose runtime for HMI session/cache support and is exposed on <code>6379</code>."
+    },
+    simulator: {
+      title: "Simulator",
+      meta: "src/production/Simulator",
+      body: "The simulator creates animal movement, microphone proximity and vocalisation events. It posts movement/microphone state to FastAPI and publishes audio messages through MQTT."
+    },
+    iotmgmt: {
+      title: "IoT management",
+      meta: "src/production/IoT/management_application",
+      body: "This Compose service is present as <code>echo_iot_management</code>. Current docs flag its upload endpoint for review because it does not cleanly match the current FastAPI routing."
+    },
+    engine: {
+      title: "Audio inference Engine",
+      meta: "src/production/Engine/echo_engine_iot.py",
+      body: "The Engine consumes MQTT messages, decodes audio when needed, calls local YAMNet/EfficientNet/TensorFlow Serving paths, and posts detection events back to the Backend API."
+    },
+    mongo: {
+      title: "MongoDB EchoNet",
+      meta: "ts-mongodb-cont",
+      body: "Main collections include events, movements, species, microphones, nodes, components, commands, sensor settings, reboots, audio uploads, predictions, detections, projects and user records."
+    },
+    model: {
+      title: "TensorFlow Serving",
+      meta: "ts-echo-model-cont:8501",
+      body: "The model container exposes configured species and weather model endpoints used by Engine inference paths."
+    },
+    gcp: {
+      title: "GCP bucket",
+      meta: "project_echo_bucket_1 default",
+      body: "Engine and Simulator use Google Cloud Storage for audio samples and species folders. The stack shares cloud credentials through a Docker volume."
+    },
+    mongoexpress: {
+      title: "mongo-express",
+      meta: "localhost:8888",
+      body: "Admin inspection UI wired to the MongoDB service in the local Compose network."
+    },
+    docs: {
+      title: "Architecture docs",
+      meta: "docs/architecture",
+      body: "Stable topology, service contracts and architecture diagrams belong here. The current file was generated from the active runtime and documentation sources."
+    },
+    design: {
+      title: "Design assets",
+      meta: "Design/",
+      body: "Product concept, dataflow overview, branding and HMI-facing visual assets live outside the production runtime."
+    },
+    prototypes: {
+      title: "Prototypes",
+      meta: "src/prototypes",
+      body: "Prototype code holds experimental API, HMI, simulator and Engine implementations. The current local Compose file builds the Engine from the PyTorch/TFLite prototype path."
+    },
+    k8s: {
+      title: "Kubernetes manifests",
+      meta: "src/deployment/kubernetes",
+      body: "Backend-owned deployment files define services and deployments for API, HMI, Engine, MongoDB, Redis and persistent volumes."
+    },
+    experiments: {
+      title: "Experiments",
+      meta: "experiments/",
+      body: "MLflow, DVC and model registry demonstrations support model experimentation but are not part of the active EchoNet runtime."
+    },
+    data: {
+      title: "Data tools",
+      meta: "src/data_tools",
+      body: "Data store notebooks, sample data, scraping helpers and repository inventory tooling sit outside the production application boundary."
+    },
+    research: {
+      title: "Research and tutorials",
+      meta: "Research/ and tutorials/",
+      body: "Literature, onboarding notebooks, task notebooks and training material remain as reference assets for the student project."
+    }
+  };
+
+  const flows = {
+    all: {
+      title: "Everything",
+      meta: "All known application relationships",
+      nodes: [],
+      edges: [],
+      body: "<p>The whole diagram is visible. Pick a focused flow to animate one behavior at a time.</p>"
+    },
+    dashboard: {
+      title: "Dashboard read path",
+      meta: "Browser -> HMI -> FastAPI -> MongoDB",
+      nodes: ["browser", "hmi", "api", "mongo", "redis"],
+      edges: ["e-browser-hmi", "e-hmi-api", "e-api-mongo", "e-hmi-redis"],
+      body: "<ol><li>Browser loads the HMI from <code>:8080</code>.</li><li>HMI serves pages and calls FastAPI for domain data.</li><li>FastAPI reads EchoNet/user collections from MongoDB.</li><li>Session state is supported by Redis.</li></ol>"
+    },
+    sim: {
+      title: "Simulator inference path",
+      meta: "Simulator -> MQTT -> Engine -> Model/API/Mongo",
+      nodes: ["simulator", "mqtt", "engine", "model", "api", "mongo", "gcp"],
+      edges: ["e-sim-mqtt", "e-mqtt-engine", "e-engine-model", "e-engine-api", "e-api-mongo", "e-engine-gcp", "e-engine-mongo", "e-sim-api"],
+      body: "<ol><li>Simulator publishes base64 audio and event metadata through MQTT.</li><li>Engine subscribes, decodes audio and runs inference.</li><li>Engine calls TensorFlow Serving where needed.</li><li>Detection and movement data land in FastAPI and MongoDB.</li></ol>"
+    },
+    edge: {
+      title: "Edge IoT prediction path",
+      meta: "Raspberry Pi -> MQTT -> Engine -> API -> MongoDB",
+      nodes: ["iot", "mqtt", "engine", "api", "mongo"],
+      edges: ["e-iot-mqtt", "e-mqtt-engine", "e-engine-api", "e-api-mongo"],
+      body: "<ol><li>IoT node records audio and runs TFLite locally.</li><li>It publishes species, confidence and GPS payloads over MQTT.</li><li>Engine detects <code>type: prediction</code> and skips server-side ML.</li><li>FastAPI stores the resulting event in MongoDB.</li></ol>"
+    },
+    deploy: {
+      title: "Deployment and repo support",
+      meta: "Production source -> Kubernetes and supporting folders",
+      nodes: ["hmi", "api", "engine", "k8s", "prototypes", "data", "experiments", "docs", "design", "research"],
+      edges: ["e-api-k8s", "e-hmi-k8s", "e-engine-k8s", "e-repo-runtime", "e-proto-engine", "e-data-engine"],
+      body: "<ol><li><code>src/production</code> remains the runtime boundary.</li><li>Kubernetes manifests live under <code>src/deployment/kubernetes</code>.</li><li>Research, prototypes, experiments and data tooling support delivery without being the main runtime.</li></ol>"
+    }
+  };
+
+  const stage = document.getElementById("stage");
+  const svg = document.getElementById("diagram");
+  const content = document.getElementById("svg-content");
+  const zoomLabel = document.getElementById("zoomLabel");
+  const detail = document.getElementById("detail");
+  const flowcap = document.getElementById("flowcap");
+  let view = { x: 0, y: 0, scale: 1 };
+  let dragging = false;
+  let moved = false;
+  let last = { x: 0, y: 0 };
+  let dragStart = { x: 0, y: 0 };
+  let suppressClick = false;
+
+  function applyTransform() {
+    content.setAttribute("transform", `translate(${view.x} ${view.y}) scale(${view.scale})`);
+    zoomLabel.textContent = `${Math.round(view.scale * 100)}%`;
+  }
+
+  function clientPoint(evt) {
+    const rect = svg.getBoundingClientRect();
+    const vb = svg.viewBox.baseVal;
+    return {
+      x: (evt.clientX - rect.left) * (vb.width / rect.width) + vb.x,
+      y: (evt.clientY - rect.top) * (vb.height / rect.height) + vb.y
+    };
+  }
+
+  svg.addEventListener("pointerdown", (evt) => {
+    dragging = true;
+    moved = false;
+    last = { x: evt.clientX, y: evt.clientY };
+    dragStart = { x: evt.clientX, y: evt.clientY };
+    svg.setPointerCapture(evt.pointerId);
+    svg.classList.add("dragging");
+  });
+
+  svg.addEventListener("pointermove", (evt) => {
+    if (!dragging) return;
+    const rect = svg.getBoundingClientRect();
+    const vb = svg.viewBox.baseVal;
+    const dx = (evt.clientX - last.x) * (vb.width / rect.width);
+    const dy = (evt.clientY - last.y) * (vb.height / rect.height);
+    if (Math.abs(evt.clientX - dragStart.x) + Math.abs(evt.clientY - dragStart.y) > 5) moved = true;
+    view.x += dx;
+    view.y += dy;
+    last = { x: evt.clientX, y: evt.clientY };
+    applyTransform();
+  });
+
+  svg.addEventListener("pointerup", (evt) => {
+    dragging = false;
+    svg.classList.remove("dragging");
+    try { svg.releasePointerCapture(evt.pointerId); } catch (_) {}
+    if (moved) {
+      suppressClick = true;
+      setTimeout(() => { suppressClick = false; }, 0);
+    }
+  });
+
+  svg.addEventListener("click", (evt) => {
+    if (suppressClick) {
+      evt.stopPropagation();
+      evt.preventDefault();
+    }
+  }, true);
+
+  svg.addEventListener("wheel", (evt) => {
+    evt.preventDefault();
+    const before = clientPoint(evt);
+    const oldScale = view.scale;
+    const factor = evt.deltaY < 0 ? 1.12 : 0.89;
+    const next = Math.min(2.8, Math.max(0.45, oldScale * factor));
+    const worldX = (before.x - view.x) / oldScale;
+    const worldY = (before.y - view.y) / oldScale;
+    view.scale = next;
+    view.x = before.x - worldX * next;
+    view.y = before.y - worldY * next;
+    applyTransform();
+  }, { passive: false });
+
+  document.getElementById("resetZoom").addEventListener("click", () => {
+    view = { x: 0, y: 0, scale: 1 };
+    applyTransform();
+  });
+
+  document.getElementById("themeToggle").addEventListener("click", () => {
+    const dark = !document.documentElement.classList.contains("dark");
+    document.documentElement.classList.toggle("dark", dark);
+    localStorage.setItem("echo-architecture-theme", dark ? "dark" : "light");
+  });
+
+  function selectNode(id) {
+    const info = nodeInfo[id];
+    if (!info) return;
+    document.querySelectorAll(".node").forEach(n => n.classList.toggle("sel", n.dataset.node === id));
+    document.getElementById("detailTitle").textContent = info.title;
+    document.getElementById("detailMeta").textContent = info.meta;
+    document.getElementById("detailBody").innerHTML = info.body;
+    detail.style.display = "block";
+  }
+
+  document.querySelectorAll(".node").forEach(node => {
+    node.addEventListener("click", () => selectNode(node.dataset.node));
+  });
+
+  function clearFlowClasses() {
+    stage.classList.remove("flowing");
+    document.querySelectorAll(".lit").forEach(el => el.classList.remove("lit"));
+  }
+
+  function setFlow(id) {
+    document.querySelectorAll(".chip").forEach(chip => chip.classList.toggle("on", chip.dataset.flow === id));
+    clearFlowClasses();
+    const flow = flows[id];
+    if (!flow || id === "all") {
+      flowcap.classList.remove("show");
+      return;
+    }
+    stage.classList.add("flowing");
+    flow.nodes.forEach(nodeId => document.querySelector(`[data-node="${nodeId}"]`)?.classList.add("lit"));
+    flow.edges.forEach(edgeId => {
+      document.getElementById(edgeId)?.classList.add("lit");
+      document.querySelector(`[data-e="${edgeId}"]`)?.classList.add("lit");
+    });
+    document.getElementById("flowTitle").textContent = flow.title;
+    document.getElementById("flowMeta").textContent = flow.meta;
+    document.getElementById("flowBody").innerHTML = flow.body;
+    flowcap.classList.add("show");
+  }
+
+  document.getElementById("chips").addEventListener("click", (evt) => {
+    const button = evt.target.closest("[data-flow]");
+    if (button) setFlow(button.dataset.flow);
+  });
+
+  document.getElementById("closeDetail").addEventListener("click", () => {
+    detail.style.display = "none";
+    document.querySelectorAll(".node.sel").forEach(n => n.classList.remove("sel"));
+  });
+
+  document.getElementById("closeFlow").addEventListener("click", () => {
+    flowcap.classList.remove("show");
+  });
+
+  applyTransform();
+</script>
+</body>
+</html>

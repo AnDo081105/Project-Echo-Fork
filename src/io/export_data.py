@@ -2,11 +2,11 @@ import pandas as pd
 
 # Paths to the Excel files
 excel_files = [
-    r"C:\Users\ragul\OneDrive\Documents\Project-Echo\src\Components\HMI\AI\bio_master_A.xlsx",
-    r"C:\Users\ragul\OneDrive\Documents\Project-Echo\src\Components\HMI\AI\bio_master_B.xlsx",
-    r"C:\Users\ragul\OneDrive\Documents\Project-Echo\src\Components\HMI\AI\bio_master_C.xlsx",
-    r"C:\Users\ragul\OneDrive\Documents\Project-Echo\src\Components\HMI\AI\bio_master_D.xlsx",
-    r"C:\Users\ragul\OneDrive\Documents\Project-Echo\src\Components\HMI\AI\bio_master_E.xlsx"
+    r"C:\Users\ragul\OneDrive\Documents\Project-Echo\src\production\HMI\AI\bio_master_A.xlsx",
+    r"C:\Users\ragul\OneDrive\Documents\Project-Echo\src\production\HMI\AI\bio_master_B.xlsx",
+    r"C:\Users\ragul\OneDrive\Documents\Project-Echo\src\production\HMI\AI\bio_master_C.xlsx",
+    r"C:\Users\ragul\OneDrive\Documents\Project-Echo\src\production\HMI\AI\bio_master_D.xlsx",
+    r"C:\Users\ragul\OneDrive\Documents\Project-Echo\src\production\HMI\AI\bio_master_E.xlsx"
 ]
 
 # Initialize empty list to hold DataFrames

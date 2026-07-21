@@ -7,7 +7,7 @@ Status: prototype, not part of the production Compose runtime
 This folder contains the standalone FastAPI/model demonstration that previously
 lived at repository root as `app/`, `Dockerfile` and `test_request.py`.
 
-The canonical production Backend API remains `src/Components/API`. Use this
+The canonical production Backend API remains `src/production/API`. Use this
 prototype only for isolated API/model experiments.
 
 ## Run

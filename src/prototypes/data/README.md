@@ -17,7 +17,7 @@ Do not delete generated caches or sample audio in this pass. The task sheet call
 | `Training_Data/` | Training data notes and examples. | Keep under training-data preparation. |
 | `audio_cleaning/` | Cleaning and deletion task notebooks/scripts. | Keep under data cleaning. |
 | `Soundfilter/` | Filtering and matching-name scripts/data. | Keep under data filtering. |
-| `database/` | Database/sample-data notebooks and JSON examples. | Compare with `src/Components/Store/database/`. |
+| `database/` | Database/sample-data notebooks and JSON examples. | Compare with `src/production/Store/database/`. |
 | `mel_cache_eff/`, `mel_cache_panns/` | Generated mel cache arrays. | Externalise or ignore after storage policy is agreed. |
 | `Task 8 Model/` | Task-specific model/data output. | Classify before moving. |
 
@@ -70,5 +70,5 @@ Recommended target grouping:
 - `acquisition`: scraping, YouTube/Xeno-Canto/ALA collection, and external download notebooks.
 - `cleaning`: silence removal, deletion tasks, clip quality checks, and filtering.
 - `training_data`: curated label mappings, ready-to-train datasets, and sample metadata.
-- `database_samples`: JSON/sample database preparation after comparison with `src/Components/Store/database/`.
+- `database_samples`: JSON/sample database preparation after comparison with `src/production/Store/database/`.
 - `generated_caches`: mel cache arrays and other reproducible generated files, tracked outside normal Git.

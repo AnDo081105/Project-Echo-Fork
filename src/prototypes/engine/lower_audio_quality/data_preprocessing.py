@@ -9,10 +9,10 @@ import audiomentations as augs
 
 SC = {
     'AUDIO_DATA_DIRECTORY': "C:/Users/regin/Documents/SIT374/train_data/b3", #original dataset location.
-    'MODEL_DIRECTORY': "C:/Users/regin/Documents/SIT374/Project-Echo/src/Components/Engine/models/echo_model/1/", #directory of the saved_model.pb file
+    'MODEL_DIRECTORY': "C:/Users/regin/Documents/SIT374/Project-Echo/src/production/Engine/models/echo_model/1/", #directory of the saved_model.pb file
     'CLASS_NAMES_DIRECTORY': "class_names_labels.json", #class names and labels JSON file
     
-    # "C:/Users/regin/Documents/SIT374/Project-Echo/src/Components/Engine/models/echo_model/1/"
+    # "C:/Users/regin/Documents/SIT374/Project-Echo/src/production/Engine/models/echo_model/1/"
 
 
     'AUDIO_CLIP_DURATION': 5, # seconds 
@@ -47,10 +47,10 @@ def default_config():
     """
     default_SC = {
         'AUDIO_DATA_DIRECTORY': "C:/Users/regin/Documents/SIT374/train_data/b3", #original dataset location.
-        'MODEL_DIRECTORY': "C:/Users/regin/Documents/SIT374/Project-Echo/src/Components/Engine/models/echo_model/1/", #directory of the saved_model.pb file
+        'MODEL_DIRECTORY': "C:/Users/regin/Documents/SIT374/Project-Echo/src/production/Engine/models/echo_model/1/", #directory of the saved_model.pb file
         'CLASS_NAMES_DIRECTORY': "class_names_labels.json", #class names and labels JSON file
     
-        # "C:/Users/regin/Documents/SIT374/Project-Echo/src/Components/Engine/models/echo_model/1/"
+        # "C:/Users/regin/Documents/SIT374/Project-Echo/src/production/Engine/models/echo_model/1/"
 
 
         'AUDIO_CLIP_DURATION': 5, # seconds 

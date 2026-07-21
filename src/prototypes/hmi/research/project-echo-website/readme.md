@@ -3,7 +3,7 @@
 Owner: HMI team
 Status: Standalone awareness website prototype; not production HMI runtime
 
-This folder was moved to HMI research from `src/prototypes/R and D/Project Echo Website` after checking that no generated dependency output such as `node_modules` was present. It is separate from the production dashboard at `src/Components/HMI/ui`.
+This folder was moved to HMI research from `src/prototypes/R and D/Project Echo Website` after checking that no generated dependency output such as `node_modules` was present. It is separate from the production dashboard at `src/production/HMI/ui`.
 
 ## Reorganisation Notes
 

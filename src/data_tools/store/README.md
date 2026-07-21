@@ -4,7 +4,7 @@ Owner: Engine team
 Status: offline data pipeline moved out of the current production tree
 Runtime role: none. This folder is not a Docker Compose service.
 
-The ownership review marks this folder as Engine-owned offline data work. It was moved from `src/Components/Store` to `src/data_tools/store` after `rg` found no non-generated references to the old path. Keep the notebooks and sample data in place during this reorganisation pass; do not delete audio clips, generated CSVs, notebook outputs, or credentials-like files until the data storage policy and migration target are confirmed.
+The ownership review marks this folder as Engine-owned offline data work. It was moved from `src/production/Store` to `src/data_tools/store` after `rg` found no non-generated references to the old path. Keep the notebooks and sample data in place during this reorganisation pass; do not delete audio clips, generated CSVs, notebook outputs, or credentials-like files until the data storage policy and migration target are confirmed.
 
 ## Cloud Buckets
 
@@ -56,13 +56,13 @@ audio_cleaning_2 is responsible for refining training data to detect sound onset
 
 Move completed in this slice:
 
-- Old path: `src/Components/Store`
+- Old path: `src/production/Store`
 - New path: `src/data_tools/store`
 - Reference check: `rg` found no non-generated references to the old path before the move.
 
 Follow-up checks:
 
 - Notebook paths in `GoogleCloud_download.ipynb`, `GoogleCloud_upload.ipynb`, `metadata.ipynb`, `duplicates.ipynb`, `audio_cleaning*.ipynb`, and database notebooks.
-- References from `src/Components/Engine` and `src/Components/Simulator`.
+- References from `src/production/Engine` and `src/production/Simulator`.
 - Whether `database/sample_data/` duplicates MongoDB seed data or prototype data under `src/prototypes/data/database/`.
 - Whether generated files such as `out.csv`, `out_2.txt`, `database/out.txt`, and temporary WAV files should be externalised or ignored.

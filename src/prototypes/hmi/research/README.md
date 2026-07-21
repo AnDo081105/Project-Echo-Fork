@@ -3,7 +3,7 @@
 Owner: HMI team
 Status: Prototype and research material; not production runtime
 
-This folder holds HMI-owned research prototypes that are separate from the active dashboard in `src/Components/HMI/ui`.
+This folder holds HMI-owned research prototypes that are separate from the active dashboard in `src/production/HMI/ui`.
 
 ## Current Contents
 

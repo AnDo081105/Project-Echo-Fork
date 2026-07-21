@@ -13,4 +13,4 @@ prototype ownership:
 - `submissions.json`
 
 These files are not part of the production HMI runtime at
-`src/Components/HMI/ui`.
+`src/production/HMI/ui`.

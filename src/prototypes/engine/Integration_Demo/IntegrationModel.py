@@ -39,7 +39,7 @@ yamnet_model.load_weights('yamnet.h5')
 yamnet_classes = yamnet.class_names('yamnet_class_map.csv')
 
 #Load specialized engine
-model = tf.keras.models.load_model('C:\\Users\\22396\\Documents\\GitHub\\Project-Echo2024\\Project-Echo\\src\\Components\\Engine\\models\\echo_model\\1') # Replace this with your own model path.
+model = tf.keras.models.load_model('C:\\Users\\22396\\Documents\\GitHub\\Project-Echo2024\\Project-Echo\\src\\production\\Engine\\models\\echo_model\\1') # Replace this with your own model path.
 df = pd.read_csv('Classes.csv')
 class_names = df["Class Name"].tolist()
 

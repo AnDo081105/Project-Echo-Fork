@@ -9,7 +9,7 @@ output_dir = Path(os.getenv("MOVEMENT_ANALYSIS_OUTPUT_DIR", tool_root / "outputs
 movement_file = Path(
     os.getenv(
         "ANIMAL_MOVEMENT_FILE",
-        repo_root / "src" / "Components" / "MongoDB" / "init" / "movements.json",
+        repo_root / "src" / "production" / "MongoDB" / "init" / "movements.json",
     )
 )
 output_file = Path(

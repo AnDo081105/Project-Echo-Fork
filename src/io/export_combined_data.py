@@ -4,11 +4,11 @@ import os
 
 # Paths to the Excel files for animal data
 animal_data_files = [
-    r"C:\Users\ragul\OneDrive\Documents\Project-Echo\src\Components\HMI\AI\bio_master_A.xlsx",
-    r"C:\Users\ragul\OneDrive\Documents\Project-Echo\src\Components\HMI\AI\bio_master_B.xlsx",
-    r"C:\Users\ragul\OneDrive\Documents\Project-Echo\src\Components\HMI\AI\bio_master_C.xlsx",
-    r"C:\Users\ragul\OneDrive\Documents\Project-Echo\src\Components\HMI\AI\bio_master_D.xlsx",
-    r"C:\Users\ragul\OneDrive\Documents\Project-Echo\src\Components\HMI\AI\bio_master_E.xlsx"
+    r"C:\Users\ragul\OneDrive\Documents\Project-Echo\src\production\HMI\AI\bio_master_A.xlsx",
+    r"C:\Users\ragul\OneDrive\Documents\Project-Echo\src\production\HMI\AI\bio_master_B.xlsx",
+    r"C:\Users\ragul\OneDrive\Documents\Project-Echo\src\production\HMI\AI\bio_master_C.xlsx",
+    r"C:\Users\ragul\OneDrive\Documents\Project-Echo\src\production\HMI\AI\bio_master_D.xlsx",
+    r"C:\Users\ragul\OneDrive\Documents\Project-Echo\src\production\HMI\AI\bio_master_E.xlsx"
 ]
 
 # Initialize an empty DataFrame to hold all animal data
@@ -26,7 +26,7 @@ for file in animal_data_files:
 print("Animal Data Columns:", all_animal_data.columns)
 
 # Load the movement data from JSON
-movements_file = r"C:\Users\ragul\OneDrive\Documents\Project-Echo\src\Components\MongoDB\init\movements.json"
+movements_file = r"C:\Users\ragul\OneDrive\Documents\Project-Echo\src\production\MongoDB\init\movements.json"
 if os.path.exists(movements_file):
     with open(movements_file, 'r') as f:
         movements_data = json.load(f)

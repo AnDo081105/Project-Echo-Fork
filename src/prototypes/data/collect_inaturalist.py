@@ -41,7 +41,7 @@ AUSTRALIA_PLACE_ID = 6744
 PER_PAGE = 200  # iNaturalist max per page
 REQUEST_TIMEOUT = 30
 
-# Default species list matching src/Components/Engine/class_names.json
+# Default species list matching src/production/Engine/class_names.json
 DEFAULT_SPECIES = [
     "Alectura lathami",
     "Menura novaehollandiae",

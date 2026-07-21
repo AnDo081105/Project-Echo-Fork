@@ -5,7 +5,7 @@ Status: Prototype/reference area; not production runtime
 
 ## Scope
 
-This folder contains earlier HMI work, duplicate UI code, digital assets, AI/reference material, and submission overview experiments. The active production HMI remains `src/Components/HMI/ui`.
+This folder contains earlier HMI work, duplicate UI code, digital assets, AI/reference material, and submission overview experiments. The active production HMI remains `src/production/HMI/ui`.
 
 ## Current Inventory
 
@@ -27,6 +27,6 @@ This folder contains earlier HMI work, duplicate UI code, digital assets, AI/ref
 ## Reorganisation Notes
 
 - Keep this area visible as HMI-owned prototype work.
-- Compare features with `src/Components/HMI/ui` before moving, merging, or archiving.
+- Compare features with `src/production/HMI/ui` before moving, merging, or archiving.
 - Do not commit generated dependencies such as `node_modules`.
 - Use lowercase, no-space paths for new HMI prototype and research material.

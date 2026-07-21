@@ -2,7 +2,7 @@
 
 Owner: Engine team
 Status: non-production R&D, with selected candidates feeding production and IoT edge inference
-Runtime role: none by default, except where `src/Components/docker-compose.yml` currently builds the Engine image from `torch_impl`
+Runtime role: none by default, except where `src/production/docker-compose.yml` currently builds the Engine image from `torch_impl`
 
 This directory contains the large Engine prototype surface: PyTorch work, TensorFlow/YAMNet experiments, augmentation, event detection, benchmarking, weather/noise modelling, ensemble/overlap work, local library experiments, student tasks, and generated outputs. Do not delete or flatten it during this reorganisation. Reorganise by technical topic only after active dependencies are checked.
 
@@ -23,7 +23,7 @@ This directory contains the large Engine prototype surface: PyTorch work, Tensor
 
 ## Dependency Notes
 
-- `src/Components/docker-compose.yml` currently builds the `echo_engine` service from `src/prototypes/engine/torch_impl`.
-- `src/Components/IoT/edge_inference/README.md` references `torch_impl` model outputs and configuration as an edge inference dependency.
+- `src/production/docker-compose.yml` currently builds the `echo_engine` service from `src/prototypes/engine/torch_impl`.
+- `src/production/IoT/edge_inference/README.md` references `torch_impl` model outputs and configuration as an edge inference dependency.
 - Large artifacts in prototype paths include `.onnx`, `.pt`, `.pth`, `.tflite`, `.h5`, `.pkl`, generated CSVs, and cached mel arrays. Keep them out of normal Git through DVC, Git LFS, or approved external storage.
 - Engine topic folders have been reconciled to normalized snake_case names. Check imports, notebook paths, docs links, and compose references before deeper consolidation.

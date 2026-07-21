@@ -10,7 +10,7 @@ Status: deployment variant, not the canonical source tree.
 
 Keep this folder for the remaining Kubernetes deployment variant source until
 the duplicated API, frontend and MongoDB paths are compared with
-`src/Components`. Kubernetes manifests now live in `src/deployment/kubernetes`.
+`src/production`. Kubernetes manifests now live in `src/deployment/kubernetes`.
 Do not delete or move files from this Kubernetes variant without checking Docker
 build contexts, environment variables, service names and any documentation links
 that refer to it.
@@ -19,9 +19,9 @@ Backend action notes:
 
 - `K8s_configs/` has moved to `src/deployment/kubernetes`; the old folder now contains only a compatibility note.
 - `api/` is a duplicate Backend API source tree and should be merged back toward
-  `src/Components/API` after a route/config diff.
+  `src/production/API` after a route/config diff.
 - `MongoDb/` is a duplicate MongoDB deployment asset tree and should be compared
-  against `src/Components/MongoDB`.
+  against `src/production/MongoDB`.
 - Environment values in ConfigMaps should be separated from secrets before any
   production deployment.
 - Hard-coded database credentials and service URLs are tracked in

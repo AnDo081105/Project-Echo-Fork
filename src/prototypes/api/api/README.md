@@ -4,7 +4,7 @@ Owner: Backend.
 
 Status: prototype API moved from `src/prototypes/api/FastAPI` to `src/prototypes/api/api`.
 
-This is a prototype demonstrating how to connect FastAPI with the MongoDB database and make some queries. The canonical production API remains `src/Components/API`.
+This is a prototype demonstrating how to connect FastAPI with the MongoDB database and make some queries. The canonical production API remains `src/production/API`.
 
 
 # Install the requirements:

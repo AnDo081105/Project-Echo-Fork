@@ -3,7 +3,7 @@
 Owner: HMI team
 Status: Prototype/reference implementation; not the canonical production HMI
 
-The production HMI is `src/Components/HMI/ui`. This folder should be reviewed for unique features before it is merged or archived.
+The production HMI is `src/production/HMI/ui`. This folder should be reviewed for unique features before it is merged or archived.
 
 ## Local Setup
 

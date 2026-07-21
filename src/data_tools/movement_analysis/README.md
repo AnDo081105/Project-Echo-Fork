@@ -4,7 +4,7 @@ Owner: Engine
 
 Status: standalone data utilities, not production runtime
 
-These scripts were moved out of `src/Components` because they are not imported
+These scripts were moved out of `src/production` because they are not imported
 by the API, Engine, HMI, IoT, Simulator or Docker Compose runtime.
 
 ## Scripts
@@ -21,7 +21,7 @@ by the API, Engine, HMI, IoT, Simulator or Docker Compose runtime.
 ## Defaults
 
 By default, scripts read the production seed input from
-`src/Components/MongoDB/init/movements.json` when movement data is needed, but
+`src/production/MongoDB/init/movements.json` when movement data is needed, but
 write generated output under `src/data_tools/movement_analysis/outputs`.
 
 Use environment variables to override paths:

@@ -14,4 +14,4 @@ It replaces the previous split where compatibility notes lived in
 | `mqtt/` | `src/prototypes/api/mqtt` | MQTT publisher/subscriber experiments and sample event payloads. |
 | `standalone_api_stub/` | repository root `app/`, `Dockerfile`, `test_request.py` | Standalone API/model demonstration outside the production Compose runtime. |
 
-The canonical production Backend API remains `src/Components/API`. Keep prototype changes here unless they are explicitly reviewed for promotion into production.
+The canonical production Backend API remains `src/production/API`. Keep prototype changes here unless they are explicitly reviewed for promotion into production.

@@ -4,7 +4,7 @@ Owner: Engine team, with IoT as a dependent stakeholder
 Status: current local compose Engine image source
 Runtime role: lightweight EfficientNetV2/TFLite inference for the Engine container
 
-This folder must be preserved during the repository reorganisation. `src/Components/docker-compose.yml` currently builds the `echo_engine` service from this directory, and IoT edge inference docs point to the EfficientNetV2 trained model outputs in this tree.
+This folder must be preserved during the repository reorganisation. `src/production/docker-compose.yml` currently builds the `echo_engine` service from this directory, and IoT edge inference docs point to the EfficientNetV2 trained model outputs in this tree.
 
 ## Key Files
 
@@ -20,7 +20,7 @@ This folder must be preserved during the repository reorganisation. `src/Compone
 
 ## IoT Dependency
 
-`src/Components/IoT/edge_inference/README.md` documents the field path that uses EfficientNetV2 TFLite artifacts from:
+`src/production/IoT/edge_inference/README.md` documents the field path that uses EfficientNetV2 TFLite artifacts from:
 
 ```text
 src/prototypes/engine/torch_impl/Integrate_EfficientNetV2_Engine/_trained_models/
